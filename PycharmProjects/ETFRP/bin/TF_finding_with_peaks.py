@@ -44,7 +44,7 @@ def AME_enrich_TFs(inpeaks, outdir, outprefix, top_peak_num, species, reference)
 
 	current_dir = os.path.realpath(__file__)
 	reference_file = '{0}/library/{1}/{2}.fa'.format(current_dir, species, reference)
-	PWM_file = '{0}/library/{1}/{1}.total_motif_PWM.meme'.format(current_dir, species)
+	PWM_file = '{0}/library/{1}/{1}.total_motif_PWM.meme'.format(current_dir, species) #hs_motifs_total.meme
 	outpath = '{0}/{1}_AME_results'.format(outdir, outprefix)
 	bash('mkdir -p {0}'.format(outpath))
 	# top_peaks = '{0}/{1}.final_sorted.top{2}.bed'.format(outdir, outprefix, top_peak_num)
@@ -58,7 +58,7 @@ def AME_enrich_TFs(inpeaks, outdir, outprefix, top_peak_num, species, reference)
 	bash('fasta-get-markov {0} -dna -m 0 {1}'.format(background_peaks_fa, background_info))
 
 	bash('ame --oc ${0} --control {1} --bfile {2} {3} {4}'.format(outpath, control_fa, background_peaks_fa, top_peaks_fa, PWM_file))
-	bash('bash choose_best_motif.sh {0} {1}'.format(outpath, outdir)) ***
+	bash('bash {0}/bin/choose_best_motif.sh {1} {2} {3}'.format(current_dir, outpath, outdir, species))
 
 
 def AME_pvalue_CNV_rank_product(AME_enriched_TFs3, CNV_file, out_TFs_file):
@@ -95,15 +95,16 @@ def AME_pvalue_CNV_rank_product(AME_enriched_TFs3, CNV_file, out_TFs_file):
 			print >> g, '\t'.join(np.array(_line, dtype=str).tolist())
 
 
-def run_DESeq2(read_count_file_folder, DEG_file):
-	***
+def run_DESeq2(read_count_file_folder, DEG_file, control_read_count_file_folder, treat_name,current_dir, species):
+	bash('Rscript {0}/bin/run_DESeq2.R {0} {1} {2} {3} {4} {5}'.format(current_dir, read_count_file_folder, DEG_file, species, control_read_count_file_folder, treat_name)) # default is read count file folder.
+	return True
 
 
-def AME_pvalue_TF_gene_FC_rank_product(AME_enriched_TFs3, DEG_file, read_count_file_folder, out_TFs_file):
+def AME_pvalue_TF_gene_FC_rank_product(AME_enriched_TFs3, DEG_file, read_count_file_folder, control_read_count_file_folder, treat_name, out_TFs_file, current_dir, species):
 	if not os.path.exists(DEG_file):
-		run_DESeq2(read_count_file_folder, DEG_file)
+		run_DESeq2(read_count_file_folder, DEG_file, control_read_count_file_folder, treat_name, current_dir, species)
 
-	DEG = load_file(DEG_file)  # DEG file must be in a format like: gene1 (hugo id) baseMean log2FoldChange lfcSE pvalue padj
+	DEG = load_file(DEG_file)[1:]  # DEG file must be in a format like: gene1 (hugo id) baseMean log2FoldChange lfcSE pvalue padj
 	# DEG2 = [[DEG[i][0], DEG[i][1], i + 1] for i in range(len(DEG))]
 	DEG_dict = {}
 	for i in range(len(DEG)):
@@ -136,7 +137,7 @@ def AME_pvalue_TF_gene_FC_rank_product(AME_enriched_TFs3, DEG_file, read_count_f
 			print >> g, '\t'.join(np.array(_line, dtype=str).tolist())
 
 
-def ranking(infile, outdir, outprefix, species, reference, signal, top_peak_num, CNV_file, DEG_file, read_count_file_folder):
+def ranking(infile, outdir, outprefix, species, reference, signal, top_peak_num, CNV_file, DEG_file, read_count_file_folder, control_read_count_file_folder, treat_name):
 	peaks = load_file(infile)
 	current_dir = os.path.realpath(__file__)
 	reference = '{0}/library/{1}/{2}.fa'.format(current_dir, species, reference)
@@ -146,7 +147,6 @@ def ranking(infile, outdir, outprefix, species, reference, signal, top_peak_num,
 
 	# rank by signal and select top 2000 peaks
 	rank_and_select_peaks(peaks, signal, top_peak_num, outdir, outprefix)
-
 
 	ranked_peaks = '{0}/{1}.final_sorted.bed'.format(outdir, outprefix, top_peak_num)
 	AME_enrich_TFs(ranked_peaks, outdir, outprefix)
@@ -158,9 +158,9 @@ def ranking(infile, outdir, outprefix, species, reference, signal, top_peak_num,
 	AME_enriched_TFs3 = [[AME_enriched_TFs2[i][0],AME_enriched_TFs2[i][1], i+1] for i in range(len(AME_enriched_TFs2))] # add rank
 
 	out_TFs_file = '{0}/{1}.found_TFs.txt'.format(outdir, outprefix)
-	if CNV_file:
-		AME_pvalue_CNV_rank_product(AME_enriched_TFs3, CNV_file, out_TFs_file)
+	if str(CNV_file) == 'True':
+		AME_pvalue_CNV_rank_product(AME_enriched_TFs3, CNV_file, out_TFs_file, current_dir)
 	else:
-		AME_pvalue_TF_gene_FC_rank_product(AME_enriched_TFs3, DEG_file, read_count_file_folder, out_TFs_file)
+		AME_pvalue_TF_gene_FC_rank_product(AME_enriched_TFs3, DEG_file, read_count_file_folder, control_read_count_file_folder, treat_name, out_TFs_file, current_dir, species)
 
 

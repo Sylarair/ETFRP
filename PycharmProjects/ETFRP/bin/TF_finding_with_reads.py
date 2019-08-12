@@ -37,7 +37,7 @@ def call_peaks_with_control(treat_file, control_file, species, outdir, outprefix
 	else:
 		logging.error('Format cannot be processed! Please change another format and try again!')
 
-	bash('macs2 callpeak -t {0} -c {1} -f {2} -g {3} -n {4} --outdir {5} -B --SPMR --nomodel --extsize 147 --shift 73'.format(treat_file, control_file, macs_mode, species, outprefix, outdir))
+	bash('macs2 callpeak -t {0} -c {1} -f {2} -g {3} -n {4} --outdir {5} -B --SPMR --nomodel --extsize 200 --shift 100'.format(treat_file, control_file, macs_mode, species, outprefix, outdir))
 	# bash('cd {0}; mv {1}_peaks.narrowPeak {1}.bed'.format(outdir, outprefix))
 
 
@@ -56,5 +56,5 @@ def call_peaks_without_control(treat_file, species, outdir, outprefix):
 	else:
 		logging.error('Format cannot be processed! Please change another format and try again!')
 
-	bash('macs2 callpeak -t {0} -f {1} -g {2} -n {3} --outdir {4} -B --SPMR --nomodel --extsize 147 --shift 73'.format(treat_file, macs_mode, species, outprefix, outdir))
+	bash('macs2 callpeak -t {0} -f {1} -g {2} -n {3} --outdir {4} -B --SPMR --nomodel --extsize 200 --shift 100'.format(treat_file, macs_mode, species, outprefix, outdir))
 	# bash('cd {0}; mv {1}_peaks.narrowPeak {1}.bed'.format(outdir, outprefix))
