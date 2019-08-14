@@ -2,6 +2,7 @@
 inpath=$1
 outpath=$2
 prefix=$3
+species=$4
 
 function choose_most_significant_one_motif_for_TF(){
 	inpath=$1
@@ -9,9 +10,9 @@ function choose_most_significant_one_motif_for_TF(){
 	prefix=$3
 	species=$4
 
-  outprefix=${outpath}"/"${outpath}/${prefix}
-  #
-  total_motif_temp=${outprefix}".total-motif.temp.bed"
+	outprefix=${outpath}"/"${prefix}
+	#
+	total_motif_temp=${outprefix}".total-motif.temp.bed"
 	total_motif=${outprefix}".total-motif.bed"
 	[[ -s ${total_motif} ]] && rm ${total_motif}
 
@@ -46,4 +47,4 @@ function choose_most_significant_one_motif_for_TF(){
 	cat ${summary_file}".sorted" > ${summary_file}
 }
 
-choose_most_significant_one_motif_for_TF ${inpath} ${outpath} ${prefix}
+choose_most_significant_one_motif_for_TF ${inpath} ${outpath} ${prefix} ${species}
