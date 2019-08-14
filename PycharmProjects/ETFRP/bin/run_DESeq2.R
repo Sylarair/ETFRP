@@ -28,7 +28,7 @@ treat_name = args[6]
 check_is_readcount_file = function(infolder){
     files = list.files(infolder)
     random_choosen_file = paste0(infolder,'/',files[sample(c(1:length(files)),1)])
-    print(random_choosen_file)
+    # print(random_choosen_file)
     random_choosen_file_concept = read.table(random_choosen_file, header=T, sep='\t', stringsAsFactors=F)
     random_choosen_file_concept[,1] = as.character(as.vector(sapply(as.vector(random_choosen_file_concept[,1],function(x) strsplit(x,'\\.')[[1]][1])))) # remove Ensembl id version number, eg. ENSG00000000003.10 --> ENSG00000000003
     random_choosen_file_concept = random_choosen_file_concept[order(-random_choosen_file_concept[,2]),] # sort data frame by the read count number from the largest to smallest
@@ -43,7 +43,7 @@ check_is_readcount_file = function(infolder){
 check_is_readcount_file2 = function(infolder) {
   files = infolder #list.files(infolder)
   random_choosen_file = files[sample(c(1:length(files)), 1)] #paste0(infolder, '/', files[sample(1, length(files), 1)])
-  print(random_choosen_file)
+  # print(random_choosen_file)
   random_choosen_file_concept = read.table(random_choosen_file, header = T, sep = '\t', stringsAsFactors = F)
   random_choosen_file_concept[, 1] = as.character(as.vector(sapply(as.vector(random_choosen_file_concept[, 1]), function(x) strsplit(x, '\\.')[[1]][1]))) # remove Ensembl id version number, eg. ENSG00000000003.10 --> ENSG00000000003
 #   print(str(random_choosen_file_concept))
@@ -59,8 +59,8 @@ check_is_readcount_file2 = function(infolder) {
 compute_DEG = function(current_dir, infolder, species, output){
     # files = list.files(infolder)
     treat_files = as.character(as.vector(strsplit(infolder,',')[[1]])) #paste0(infolder,'/',files)
-    print(infolder)
-    print(treat_files)
+    # print(infolder)
+    # print(treat_files)
     if (control_read_count_folder=='False'){
         control_files = paste0(current_dir,'/library/Tissue_read_counts/',species,'/',list.files(paste0(current_dir,'/library/Tissue_read_counts/', species)))
     } else{
@@ -133,7 +133,7 @@ compute_DEG = function(current_dir, infolder, species, output){
         total_counts = total_counts[, colnames(total_counts)!='gene_id']
         colnames(total_counts) = c(paste0('treat', c(1:(ncol(treat_counts) - 1))), paste0('control', c(1:(ncol(control_counts) - 1))))
         total_counts = round(total_counts)
-        print(str(total_counts))
+        # print(str(total_counts))
         colData = data.frame(row.names = colnames(total_counts), condition = unlist(c(rep('treat',ncol(treat_counts)-1),rep('control',ncol(control_counts)-1))))
         dds = DESeqDataSetFromMatrix(countData = total_counts, colData = colData, design = ~ condition)
         dds$condition = factor(dds$condition, levels = c('control','treat')) # set levels to make treat compared to control
