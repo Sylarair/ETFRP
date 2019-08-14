@@ -1,5 +1,5 @@
-# Example Package
+# Essential Transcription Factors prediction based on Rank Product (ETFRP)
 
-This is a tissue essential TFs prediction package.You can use it to get your TFs.
+This is a tissue essential TFs prediction package. You can use it to get your TFs.
 
 If you have any question, please mail to qwang601@gmail.com. Thanks!
