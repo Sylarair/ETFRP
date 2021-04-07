@@ -1,4 +1,4 @@
-# Essential Transcription Factors prediction based on Rank Product (ETFRP)
+# cell Essential Transcription factors pRediction based on rAnk product (ETRA)
 
 This is a tissue essential TFs prediction package. You can use it to get your TFs.
 
