@@ -1,4 +1,4 @@
-# cell Essential Transcription factors pRediction based on rAnk product (ETRA)
+# cell Essential and functional Transcription factors pRediction based on rAnk product (ETRA)
 
 This is a tissue essential TFs prediction package. You can use it to get your TFs.
 
